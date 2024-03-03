@@ -5,9 +5,9 @@ const nodeinfo = new Hono()
 const data = {
     version: "2.0",
     software: {
-        name: "自作AP鯖 ap.tty7.uk",
+        name: "asparagus",
         repository: "https://github.com/Zel9278/ap.tty7.uk",
-        version: "0",
+        version: "0.0.1",
         homepage: "https://github.com/Zel9278/ap.tty7.uk",
     },
     protocols: {
@@ -48,7 +48,7 @@ const data = {
         repositoryUrl: "https://github.com/Zel9278/ap.tty7.uk",
         feedbackUrl: "https://github.com/Zel9278/ap.tty7.uk/issues/new",
         disableRegistration: true,
-        maxNoteTextLength: Infinity,
+        maxNoteTextLength: Number.MAX_SAFE_INTEGER,
         themeColor: "#37e934",
     },
 }

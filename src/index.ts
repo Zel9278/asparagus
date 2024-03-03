@@ -26,7 +26,7 @@ app.get("/actor", (c) => {
         })
     }
 
-    if (resource === actor.id) {
+    if (resource === actor.preferredUsername) {
         return c.json(actor, 200, {
             "Content-Type": "application/activity+json",
         })

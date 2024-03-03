@@ -4,6 +4,7 @@ import actor from "./actor"
 import accepts from "./accepts"
 import wellKnown from "./well-known"
 import nodeinfo from "./nodeinfo"
+import me from "./me"
 
 const PORT = 7634
 
@@ -15,12 +16,12 @@ app.use((c, next) => {
 })
 
 app.route("/.well-known", wellKnown)
+app.route("/nodeinfo", nodeinfo)
+app.route("/me", me)
 
 app.get("/", (c) => {
     return c.text("Hello Hono!")
 })
-
-app.route("/nodeinfo", nodeinfo)
 
 app.get("/actor", (c) => {
     const accept = c.req.header("Accept")?.match(/[^,; ]+/g) || []

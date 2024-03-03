@@ -18,6 +18,7 @@ app.get("/", (c) => {
 
 app.get("/actor", (c) => {
     const accept = c.req.header("Accept")?.match(/[^,; ]+/g) || []
+    const resource = decodeURI(c.req.query("resource") || "")
 
     if (!accept.some((a) => accepts.includes(a))) {
         c.text("Not Acceptable", 406, {
@@ -25,7 +26,15 @@ app.get("/actor", (c) => {
         })
     }
 
-    return c.json(actor, 200, { "Content-Type": "application/activity+json" })
+    if (resource === actor.id) {
+        return c.json(actor, 200, {
+            "Content-Type": "application/activity+json",
+        })
+    } else {
+        return c.text("Not Found", 404, {
+            "Content-Type": "application/activity+json",
+        })
+    }
 })
 
 console.log(`Server is running on port ${PORT}`)

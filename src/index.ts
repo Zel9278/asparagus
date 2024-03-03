@@ -8,7 +8,7 @@ const PORT = 7634
 const app = new Hono()
 
 app.use((c, next) => {
-    console.log(c.req.method, c.req.url, c.req.header())
+    console.log(c.req.method, c.req.url)
     return next()
 })
 
@@ -18,7 +18,6 @@ app.get("/", (c) => {
 
 app.get("/actor", (c) => {
     const accept = c.req.header("Accept")?.match(/[^,; ]+/g) || []
-    const resource = decodeURI(c.req.query("resource") || "")
 
     if (!accept.some((a) => accepts.includes(a))) {
         c.text("Not Acceptable", 406, {
@@ -26,19 +25,12 @@ app.get("/actor", (c) => {
         })
     }
 
-    if (resource === actor.preferredUsername) {
-        return c.json(actor, 200, {
-            "Content-Type": "application/activity+json",
-        })
-    } else {
-        return c.text("Not Found", 404, {
-            "Content-Type": "application/activity+json",
-        })
-    }
+    return c.json(actor, 200, {
+        "Content-Type": "application/activity+json",
+    })
 })
 
 console.log(`Server is running on port ${PORT}`)
-console.log(actor)
 
 serve({
     fetch: app.fetch,

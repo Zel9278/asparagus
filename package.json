@@ -1,19 +1,23 @@
 {
-  "scripts": {
-    "dev": "tsx watch src/index.ts"
-  },
-  "dependencies": {
-    "@hono/node-server": "^1.8.2",
-    "better-sqlite3": "^9.4.3",
-    "drizzle-orm": "^0.29.4",
-    "hono": "^4.0.8"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.17",
-    "autoprefixer": "^10.4.18",
-    "drizzle-kit": "^0.20.14",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.1",
-    "tsx": "^3.12.2"
-  }
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "tcss": "tailwindcss -i ./src/frontend/css/main.css -o ./src/resources/css/main.css --watch",
+        "mkmigration": "drizzle-kit generate:sqlite --schema=./src/database/tables.ts"
+    },
+    "dependencies": {
+        "@hono/node-server": "^1.8.2",
+        "bcrypt": "^5.1.1",
+        "better-sqlite3": "^9.4.3",
+        "drizzle-orm": "^0.29.4",
+        "hono": "^4.0.8"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.17",
+        "autoprefixer": "^10.4.18",
+        "daisyui": "^4.7.2",
+        "drizzle-kit": "^0.20.14",
+        "postcss": "^8.4.35",
+        "tailwindcss": "^3.4.1",
+        "tsx": "^3.12.2"
+    }
 }

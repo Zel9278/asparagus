@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1709587137013,
+      "tag": "0000_round_sunspot",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1709602217443,
+      "tag": "0001_daffy_overlord",
+      "breakpoints": true
+    }
+  ]
+}

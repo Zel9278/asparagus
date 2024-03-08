@@ -39,6 +39,10 @@ wellKnown.get("/nodeinfo", (c) => {
                 rel: "http://nodeinfo.diaspora.software/ns/schema/2.0",
                 href: "https://ap.tty7.uk/nodeinfo/2.0",
             },
+            {
+                rel: "http://nodeinfo.diaspora.software/ns/schema/2.1",
+                href: "https://ap.tty7.uk/nodeinfo/2.1",
+            },
         ],
     })
 })

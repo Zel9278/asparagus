@@ -1,6 +1,6 @@
 import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core"
 
-export const users = sqliteTable("users", {
+export const Users = sqliteTable("users", {
     id: text("id").primaryKey().notNull(),
     username: text("username").notNull(),
     name: text("name"),
@@ -16,7 +16,7 @@ export const users = sqliteTable("users", {
     privatekey: text("privatekey").notNull(),
 })
 
-export const remote_users = sqliteTable("remote_users", {
+export const RemoteUsers = sqliteTable("remote_users", {
     id: text("id").primaryKey().notNull(),
     username: text("username").notNull(),
     name: text("name"),
@@ -27,7 +27,7 @@ export const remote_users = sqliteTable("remote_users", {
     updated_at: integer("updated_at").notNull(),
 })
 
-export const posts = sqliteTable("posts", {
+export const Posts = sqliteTable("posts", {
     id: text("id").primaryKey().notNull(),
     user_id: text("user_id").notNull(),
     content: text("content").notNull(),
@@ -38,13 +38,13 @@ export const posts = sqliteTable("posts", {
     created_at: integer("created_at").notNull(),
 })
 
-export const emojis = sqliteTable("emojis", {
+export const Emojis = sqliteTable("emojis", {
     id: text("id").primaryKey().notNull(),
     name: text("name").notNull(),
     url: text("url").notNull(),
 })
 
-export const follows = sqliteTable("follows", {
+export const Follows = sqliteTable("follows", {
     id: text("id").primaryKey().notNull(),
     follower_id: text("follower_id").notNull(),
     followed_id: text("followed_id").notNull(),
@@ -52,7 +52,7 @@ export const follows = sqliteTable("follows", {
     created_at: integer("created_at").notNull(),
 })
 
-export const followers = sqliteTable("followers", {
+export const Followers = sqliteTable("followers", {
     id: text("id").primaryKey().notNull(),
     user_id: text("user_id").notNull(),
     follower_id: text("follower_id").notNull(),
@@ -60,7 +60,7 @@ export const followers = sqliteTable("followers", {
     created_at: integer("created_at").notNull(),
 })
 
-export const likes = sqliteTable("likes", {
+export const Likes = sqliteTable("likes", {
     id: text("id").primaryKey().notNull(),
     emoji_id: text("emoji_id").notNull(),
     user_id: text("user_id").notNull(),
@@ -69,7 +69,7 @@ export const likes = sqliteTable("likes", {
     created_at: integer("created_at").notNull(),
 })
 
-export const files = sqliteTable("files", {
+export const Files = sqliteTable("files", {
     id: text("id").primaryKey().notNull(),
     name: text("name").notNull(),
     user_id: text("user_id").notNull(),
@@ -77,7 +77,7 @@ export const files = sqliteTable("files", {
     created_at: integer("created_at").notNull(),
 })
 
-export const servers = sqliteTable("servers", {
+export const Servers = sqliteTable("servers", {
     id: text("id").primaryKey().notNull(),
     name: text("name"),
     summary: text("summary"),

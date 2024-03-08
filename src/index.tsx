@@ -2,7 +2,6 @@ import { serve } from "@hono/node-server"
 import { serveStatic } from "@hono/node-server/serve-static"
 import { Hono } from "hono"
 import { setCookie, getCookie, deleteCookie } from "hono/cookie"
-import { logger } from "hono/logger"
 import { poweredBy } from "hono/powered-by"
 import { eq, or } from "drizzle-orm"
 import { migrate } from "drizzle-orm/better-sqlite3/migrator"
@@ -13,15 +12,16 @@ import bcrypt from "bcrypt"
 import actor from "./actor"
 import accepts from "./accepts"
 import wellKnown from "./well-known"
-import nodeinfo from "./nodeinfo"
+import nodeInfo from "./nodeInfo"
 import me from "./me"
-import { users } from "./database/tables"
+import { Users } from "./database/tables"
+import manifest from "./manifest"
 
 import { renderer } from "./frontend/renderer"
 import Home from "./frontend/home"
 import Login from "./frontend/login"
 import path from "path"
-import Logined from "./frontend/logined"
+import { Logined } from "./frontend/logined"
 
 const PORT = 7634
 
@@ -40,20 +40,38 @@ migrate(db, {
 export const database = db
 
 app.use(poweredBy())
-app.use(logger())
+app.use("*", async (c, next) => {
+    const time = new Date()
+
+    await next()
+
+    const diff = new Date().getTime() - time.getTime()
+    const url = c.req.url
+    const userAgent = c.req.header("User-Agent")
+    const method = c.req.method
+    const status = c.res.status
+
+    console.log(`${method}(${status}) ${url} - ${diff}ms | ${userAgent}`)
+})
 app.use("*", renderer)
 
-app.use("/resources/*", serveStatic({ root: "./src" }))
-app.use("/favicon.ico", serveStatic({ root: "./src" }))
+const staticOptions = {
+    root: "./src",
+}
+
+app.use("/resources/*", serveStatic(staticOptions))
+app.use("/favicon.ico", serveStatic(staticOptions))
 
 app.route("/.well-known", wellKnown)
-app.route("/nodeinfo", nodeinfo)
+app.route("/nodeInfo", nodeInfo)
 app.route("/me", me)
 
 app.get("/", async (c) => {
-    const cookie = getCookie(c, "token")
-    const usrs = await db.select().from(users).all()
-    const user = usrs.find((u) => u.token?.split(",").includes(cookie))
+    const cookie = getCookie(c, "token") || ""
+    const users = db.select().from(Users).all()
+    const user = users.find((u) => {
+        return u.token?.split(",").includes(cookie)
+    })
 
     if (!user) {
         return c.render(Home, {
@@ -63,8 +81,29 @@ app.get("/", async (c) => {
 
     const token = user?.token?.split(",") || []
 
+    const messages = [
+        {
+            name: "Taro",
+            username: "taro",
+            content: "Hello, World!",
+            isMe: false,
+        },
+        {
+            name: "Hana",
+            username: "hana",
+            content: "This is using Hono",
+            isMe: false,
+        },
+        {
+            name: "me",
+            username: "me",
+            content: "That's me!",
+            isMe: true,
+        },
+    ]
+
     if (token.includes(cookie)) {
-        return c.render(Logined, {
+        return c.render(<Logined messages={messages} />, {
             title: "Home",
             user: {
                 id: user.id,
@@ -89,8 +128,8 @@ app.get("/login", async (c) => {
     const cookie = getCookie(c, "token") || ""
     const user = await db
         .select()
-        .from(users)
-        .where(eq(users.token, cookie))
+        .from(Users)
+        .where(eq(Users.token, cookie))
         .execute()
     const tokens = user[0]?.token?.split(",") || []
 
@@ -110,14 +149,15 @@ app.get("/logout", async (c) => {
         return c.redirect("/")
     }
 
-    const usrs = await db.select().from(users).all()
+    const users = db.select().from(Users).all()
 
-    const user = usrs.find((u) => u.token?.split(",").includes(token))
+    const user = users.find((u) => u.token?.split(",").includes(token))
     const tokens = user?.token?.split(",") || []
     tokens.splice(tokens.indexOf(token), 1)
-    db.update(users)
+    await db
+        .update(Users)
         .set({ token: tokens.join(",") })
-        .where(eq(users.id, user?.id))
+        .where(eq(Users.id, user?.id || ""))
         .execute()
 
     deleteCookie(c, "token")
@@ -126,12 +166,13 @@ app.get("/logout", async (c) => {
 
 app.post("/login", async (c) => {
     const body = await c.req.parseBody()
-    const { username, password } = body
+    const username = (body?.username as string) || ""
+    const password = (body.password as string) || ""
 
     const result = await db
         .select()
-        .from(users)
-        .where(or(eq(users.username, username), eq(users.email, username)))
+        .from(Users)
+        .where(or(eq(Users.username, username), eq(Users.email, username)))
         .execute()
 
     if (result.length === 0) {
@@ -151,9 +192,10 @@ app.post("/login", async (c) => {
     )
     setCookie(c, "token", token)
     if (tokens) tokens.push(token)
-    db.update(users)
+    await db
+        .update(Users)
         .set({ token: tokens?.join(",") })
-        .where(eq(users.id, user.id))
+        .where(eq(Users.id, user.id))
         .execute()
 
     return c.redirect("/")
@@ -173,6 +215,18 @@ app.get("/actor", async (c) => {
     return c.json(data, 200, {
         "Content-Type": "application/activity+json",
     })
+})
+
+app.post("/inbox", async (c) => {
+    return c.text("OK")
+})
+
+app.get("/manifest.json", async (c) => {
+    return c.json(manifest)
+})
+
+app.get("/robots.txt", async (c) => {
+    return c.text("User-agent: *\nDisallow: /")
 })
 
 console.log(`Server is running on port ${PORT}`)

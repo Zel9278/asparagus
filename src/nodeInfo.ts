@@ -1,14 +1,14 @@
 import { Hono } from "hono"
 
-const nodeinfo = new Hono()
+const nodeInfo = new Hono()
 
 const data = {
     version: "2.0",
     software: {
         name: "asparagus",
-        repository: "https://github.com/Zel9278/ap.tty7.uk",
+        repository: "https://github.com/Zel9278/asparagus",
         version: "0.0.1",
-        homepage: "https://github.com/Zel9278/ap.tty7.uk",
+        homepage: "https://github.com/Zel9278/asparagus",
     },
     protocols: {
         inbound: ["activitypub"],
@@ -45,16 +45,20 @@ const data = {
         },
         langs: ["ja"],
         impressumUrl: "https://c30.life",
-        repositoryUrl: "https://github.com/Zel9278/ap.tty7.uk",
-        feedbackUrl: "https://github.com/Zel9278/ap.tty7.uk/issues/new",
+        repositoryUrl: "https://github.com/Zel9278/asparagus",
+        feedbackUrl: "https://github.com/Zel9278/asparagus/issues/new",
         disableRegistration: true,
         maxNoteTextLength: Number.MAX_SAFE_INTEGER,
         themeColor: "#37e934",
     },
 }
 
-nodeinfo.get("/2.0", (c) => {
+nodeInfo.get("/2.0", (c) => {
     return c.json(data)
 })
 
-export default nodeinfo
+nodeInfo.get("/2.1", (c) => {
+    return c.json(data)
+})
+
+export default nodeInfo

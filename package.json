@@ -1,9 +1,22 @@
 {
+    "name": "asparagus",
+    "version": "0.0.1",
+    "description": "A activitypub server",
+    "main": "index.js",
     "scripts": {
-        "dev": "tsx watch src/index.ts",
+        "dev": "tsx watch src/index.tsx",
         "tcss": "tailwindcss -i ./src/frontend/css/main.css -o ./src/resources/css/main.css --watch",
         "mkmigration": "drizzle-kit generate:sqlite --schema=./src/database/tables.ts"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/zel9278/asparagus.git"
+    },
+    "keywords": [
+        "activitypub",
+        "server"
+    ],
+    "author": "Zel9278",
     "dependencies": {
         "@hono/node-server": "^1.8.2",
         "bcrypt": "^5.1.1",
@@ -12,6 +25,8 @@
         "hono": "^4.0.8"
     },
     "devDependencies": {
+        "@types/bcrypt": "^5.0.2",
+        "@types/better-sqlite3": "^7.6.9",
         "@types/node": "^20.11.17",
         "autoprefixer": "^10.4.18",
         "daisyui": "^4.7.2",

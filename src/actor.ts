@@ -1,7 +1,7 @@
 import fs from "fs"
 import path from "path"
 import { database } from "./index"
-import { users } from "./database/tables"
+import { Users } from "./database/tables"
 import { eq } from "drizzle-orm"
 
 const publicKey = fs.readFileSync(
@@ -12,8 +12,8 @@ const publicKey = fs.readFileSync(
 async function getUser(username: string) {
     const usrs = await database
         .select()
-        .from(users)
-        .where(eq(users.username, username))
+        .from(Users)
+        .where(eq(Users.username, username))
         .execute()
     const user = usrs[0]
 
